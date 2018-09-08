@@ -1,0 +1,6 @@
+[package]
+name = "ytr"
+version = "0.1.0"
+authors = ["Ilya Lunev <ilunev@protonmail.com>"]
+
+[dependencies]
