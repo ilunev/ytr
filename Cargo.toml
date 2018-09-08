@@ -4,3 +4,5 @@ version = "0.1.0"
 authors = ["Ilya Lunev <ilunev@protonmail.com>"]
 
 [dependencies]
+url = "1.7.1"
+reqwest = "0.8.8"
