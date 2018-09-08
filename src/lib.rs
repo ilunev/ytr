@@ -22,7 +22,7 @@ impl TranslateAPI {
         }
     }
 
-    fn make_url<I, K, V>(&self, method: &str, params: I) -> Url
+    pub fn make_url<I, K, V>(&self, method: &str, params: I) -> Url
         where I: IntoIterator,
               I::Item: Borrow<(K, V)>,
               K: AsRef<str>,
@@ -38,3 +38,7 @@ impl TranslateAPI {
         url
     }
 }
+
+
+#[cfg(test)]
+mod tests;
