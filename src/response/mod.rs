@@ -49,3 +49,7 @@ impl<'de> Deserialize<'de> for TranslateResponse {
         })
     }
 }
+
+
+#[cfg(test)]
+mod tests;
