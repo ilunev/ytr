@@ -5,7 +5,7 @@ use std::collections::HashMap;
 #[derive(Deserialize)]
 pub struct LangsResponse {
     pub dirs: Vec<String>,
-    pub langs: HashMap<String, String>,
+    pub langs: Option<HashMap<String, String>>,
 }
 
 

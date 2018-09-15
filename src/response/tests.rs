@@ -25,7 +25,7 @@ fn deserialize_langs_response() {
     };
     let parsed: LangsResponse = serde_json::from_str(json).unwrap();
     assert_eq!(dirs, parsed.dirs);
-    assert_eq!(langs, parsed.langs);
+    assert_eq!(langs, parsed.langs.unwrap());
 }
 
 #[test]
