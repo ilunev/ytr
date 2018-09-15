@@ -1,6 +1,9 @@
 use url::Url;
-use reqwest::Client;
+use serde::de::DeserializeOwned;
+use reqwest::{Client, StatusCode};
 use std::borrow::Borrow;
+
+use error::Error;
 
 const BASE_URL: &str = "https://translate.yandex.net/api/v1.5/tr.json";
 
@@ -16,6 +19,34 @@ impl TranslateAPI {
         TranslateAPI {
             key,
             client,
+        }
+    }
+
+    fn request<T>(&self, url: Url) -> Result<T, Error>
+        where T: DeserializeOwned,
+    {
+        let req_res = self.client
+            .get(url)
+            .send();
+
+        if let Err(_) = req_res {
+            return Err(Error::RequestFailed);
+        }
+
+        let mut resp = req_res.unwrap();
+
+        if let StatusCode::Ok = resp.status() {
+            if let Ok(obj) = resp.json() {
+                Ok(obj)
+            } else {
+                Err(Error::UnexpectedResponse)
+            }
+        } else {
+            if let Ok(err_obj) = resp.json() {
+                Err(Error::ApiError(err_obj))
+            } else {
+                Err(Error::UnexpectedResponse)
+            }
         }
     }
 
@@ -35,6 +66,7 @@ impl TranslateAPI {
         url
     }
 }
+
 
 #[cfg(test)]
 mod tests;
