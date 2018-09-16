@@ -1,5 +1,8 @@
-use serde::{Deserialize, Deserializer};
+use serde::de::{Deserialize, Deserializer, DeserializeOwned};
 use std::collections::HashMap;
+
+
+pub trait ApiResponse: DeserializeOwned {}
 
 
 #[derive(Deserialize)]
@@ -8,11 +11,15 @@ pub struct LangsResponse {
     pub langs: Option<HashMap<String, String>>,
 }
 
+impl ApiResponse for LangsResponse {}
+
 
 #[derive(Deserialize)]
 pub struct DetectResponse {
     pub lang: String,
 }
+
+impl ApiResponse for DetectResponse {}
 
 
 pub struct TranslateResponse {
@@ -49,6 +56,8 @@ impl<'de> Deserialize<'de> for TranslateResponse {
         })
     }
 }
+
+impl ApiResponse for TranslateResponse {}
 
 
 #[cfg(test)]

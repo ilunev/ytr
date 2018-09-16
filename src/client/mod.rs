@@ -1,9 +1,8 @@
 use url::Url;
-use serde::de::DeserializeOwned;
 use reqwest::{Client, StatusCode};
 use std::borrow::Borrow;
 
-use response::{LangsResponse, DetectResponse, TranslateResponse};
+use response::{ApiResponse, LangsResponse, DetectResponse, TranslateResponse};
 use error::{Error, Result};
 
 const BASE_URL: &str = "https://translate.yandex.net/api/v1.5/tr.json";
@@ -74,7 +73,7 @@ impl TranslateAPI {
     }
 
     fn request<T>(&self, url: Url) -> Result<T>
-        where T: DeserializeOwned,
+        where T: ApiResponse,
     {
         let req_res = self.client
             .get(url)
