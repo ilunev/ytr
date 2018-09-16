@@ -9,7 +9,7 @@ extern crate url;
 
 pub use self::client::TranslateAPI;
 pub use self::response::{LangsResponse, DetectResponse, TranslateResponse};
-pub use self::error::{Error, ApiError};
+pub use self::error::{Error, ApiError, Result};
 
 
 mod client;
