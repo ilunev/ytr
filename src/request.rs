@@ -118,3 +118,44 @@ impl<'a> ApiRequest for TranslateRequest<'a> {
         "translate"
     }
 }
+
+
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use serde_urlencoded::to_string;
+
+    #[test]
+    fn langs_request_without_optional_arguments() {
+        let api = TranslateAPI::new("token".to_string());
+        let req = LangsRequest::new(&api);
+        assert_eq!("".to_string(), to_string(&req).unwrap());
+        assert_eq!("getLangs", req.method());
+    }
+
+    #[test]
+    fn detect_request_with_comma_separated_hint_list() {
+        let api = TranslateAPI::new("token".to_string());
+        let req = DetectRequest::new(&api, "hello")
+            .hint(&vec!["en", "es", "de"]);
+        assert_eq!(
+            "text=hello&hint=en%2Ces%2Cde".to_string(),
+            to_string(&req).unwrap()
+        );
+        assert_eq!("detect", req.method());
+    }
+
+    #[test]
+    fn translate_request_with_optional_arguments() {
+        let api = TranslateAPI::new("token".to_string());
+        let req = TranslateRequest::new(&api, "hello", "ru")
+            .format("plain")
+            .options(1);
+        assert_eq!(
+            "text=hello&lang=ru&format=plain&options=1".to_string(),
+            to_string(&req).unwrap()
+        );
+        assert_eq!("translate", req.method());
+    }
+}
