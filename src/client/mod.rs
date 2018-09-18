@@ -1,8 +1,9 @@
 use url::Url;
-use reqwest::{Client, StatusCode};
-use std::borrow::Borrow;
+use reqwest::{Client, StatusCode, header::ContentType};
+use serde_urlencoded;
 
-use response::{ApiResponse, LangsResponse, DetectResponse, TranslateResponse};
+use response::ApiResponse;
+use request::{ApiRequest, LangsRequest, DetectRequest, TranslateRequest};
 use error::{Error, Result};
 
 const BASE_URL: &str = "https://translate.yandex.net/api/v1.5/tr.json";
@@ -23,84 +24,83 @@ impl TranslateAPI {
         }
     }
 
-    pub fn get_langs(&self, ui: &str) -> Result<LangsResponse> {
-        let params = vec![("ui", ui)];
-        let url = self.make_url("getLangs", params);
-        self.request(url)
+
+    pub fn get_langs(&self) -> LangsRequest {
+        LangsRequest::new(&self)
     }
 
-    pub fn detect<S>(&self, text: &str, hint: Option<&[S]>) -> Result<DetectResponse>
-        where S: Borrow<str>,
+
+    pub fn detect<'a>(&'a self, text: &'a str) -> DetectRequest<'a> {
+        DetectRequest::new(&self, text)
+    }
+
+
+    pub fn translate<'a>(
+        &'a self,
+        text: &'a str,
+        lang: &'a str
+    ) -> TranslateRequest<'a> {
+        
+        TranslateRequest::new(&self, text, lang)
+    }
+
+
+    pub fn execute<Req, Resp>(&self, req: Req) -> Result<Resp>
+        where Req: ApiRequest,
+              Resp: ApiResponse,
     {
-        let joined_hint;
-        let mut params = vec![("text", text)];
-        if let Some(hint) = hint {
-            joined_hint = hint.join(",");
-            params.push(("hint", &joined_hint));
-        }
-        let url = self.make_url("detect", params);
-        self.request(url)
-    }
-
-    pub fn translate(&self, text: &str, lang: &str, format: Option<&str>, options: Option<u8>) -> Result<TranslateResponse> {
-        let string_options;
-        let mut params = vec![("text", text), ("lang", lang)];
-        if let Some(format) = format {
-            params.push(("format", format));
-        }
-        if let Some(options) = options {
-            string_options = options.to_string();
-            params.push(("options", &string_options));
-        }
-        let url = self.make_url("translate", params);
-        self.request(url)
-    }
-
-    fn make_url<I, K, V>(&self, method: &str, params: I) -> Url
-        where I: IntoIterator,
-              I::Item: Borrow<(K, V)>,
-              K: AsRef<str>,
-              V: AsRef<str>,
-    {
-        let mut url = Url::parse(BASE_URL).unwrap();
-        url.path_segments_mut()
-            .unwrap()
-            .push(method);
-        url.query_pairs_mut()
-            .append_pair("key", &self.key)
-            .extend_pairs(params);
-        url
-    }
-
-    fn request<T>(&self, url: Url) -> Result<T>
-        where T: ApiResponse,
-    {
-        let req_res = self.client
-            .get(url)
+        let url = self.make_url(req.method());
+        let data = serde_urlencoded::to_string(&req)
+            .expect("can't serialize request contents");
+        let resp = self.client
+            .post(url)
+            .body(data)
+            .header(ContentType::form_url_encoded())
             .send();
 
-        if let Err(_) = req_res {
-            return Err(Error::RequestFailed);
-        }
-
-        let mut resp = req_res.unwrap();
-
-        if let StatusCode::Ok = resp.status() {
-            if let Ok(obj) = resp.json() {
-                Ok(obj)
+        if let Ok(mut resp) = resp {
+            if let StatusCode::Ok = resp.status() {
+                if let Ok(obj) = resp.json() {
+                    Ok(obj)
+                } else {
+                    Err(Error::UnexpectedResponse)
+                }
             } else {
-                Err(Error::UnexpectedResponse)
+                if let Ok(err_obj) = resp.json() {
+                    Err(Error::ApiError(err_obj))
+                } else {
+                    Err(Error::UnexpectedResponse)
+                }
             }
         } else {
-            if let Ok(err_obj) = resp.json() {
-                Err(Error::ApiError(err_obj))
-            } else {
-                Err(Error::UnexpectedResponse)
-            }
+            Err(Error::RequestFailed)
         }
+    }
+
+
+    fn make_url(&self, method: &str) -> Url {
+        let mut url = Url::parse(BASE_URL)
+            .unwrap();             // always parsed
+        url.path_segments_mut()
+            .unwrap()              // BASE_URL is not cannot-be-a-base
+            .push(method);
+        url.query_pairs_mut()
+            .append_pair("key", &self.key);
+        url
     }
 }
 
 
 #[cfg(test)]
-mod tests;
+mod tests {
+    use super::*;
+
+    fn make_url_test() {
+        let api = TranslateAPI::new("mytoken".to_string());
+        let url = api.make_url("method");
+        assert_eq!(
+            "https://translate.yandex.net/api/v1.5/tr.json/method?key=mytoken",
+            url.as_str()
+        );
+    }
+}
