@@ -2,6 +2,8 @@ use serde::ser::Serialize;
 use std::borrow::Borrow;
 
 use client::TranslateAPI;
+use response::{LangsResponse, DetectResponse, TranslateResponse};
+use error::Result;
 
 
 
@@ -23,6 +25,10 @@ impl<'a> LangsRequest<'a> {
     pub fn ui(mut self, value: &'a str) -> LangsRequest<'a> {
         self.ui = Some(value);
         self
+    }
+
+    pub fn get(self) -> Result<LangsResponse> {
+        self.client.execute(self)
     }
 
     pub(crate) fn new(client: &'a TranslateAPI) -> LangsRequest<'a> {
@@ -56,6 +62,10 @@ impl<'a> DetectRequest<'a> {
     {
         self.hint = Some(value.join(","));
         self
+    }
+
+    pub fn get(self) -> Result<DetectResponse> {
+        self.client.execute(self)
     }
 
     pub(crate) fn new(client: &'a TranslateAPI, text: &'a str) -> DetectRequest<'a> {
@@ -95,6 +105,10 @@ impl<'a> TranslateRequest<'a> {
     pub fn options(mut self, value: u8) -> TranslateRequest<'a> {
         self.options = Some(value);
         self
+    }
+
+    pub fn get(self) -> Result<TranslateResponse> {
+        self.client.execute(self)
     }
 
     pub(crate) fn new(
