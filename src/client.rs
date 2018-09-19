@@ -95,6 +95,7 @@ impl TranslateAPI {
 mod tests {
     use super::*;
 
+    #[test]
     fn make_url_test() {
         let api = TranslateAPI::new("mytoken".to_string());
         let url = api.make_url("method");
