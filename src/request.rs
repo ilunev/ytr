@@ -1,7 +1,7 @@
 use serde::ser::Serialize;
 use std::borrow::Borrow;
 
-use client::TranslateAPI;
+use client::ApiClient;
 use response::{LangsResponse, DetectResponse, TranslateResponse};
 use error::Result;
 
@@ -17,7 +17,7 @@ pub trait ApiRequest: Serialize {
 #[derive(Serialize)]
 pub struct LangsRequest<'a> {
     #[serde(skip)]
-    client: &'a TranslateAPI,
+    client: &'a ApiClient,
     ui: Option<&'a str>,
 }
 
@@ -31,7 +31,7 @@ impl<'a> LangsRequest<'a> {
         self.client.execute(self)
     }
 
-    pub(crate) fn new(client: &'a TranslateAPI) -> LangsRequest<'a> {
+    pub(crate) fn new(client: &'a ApiClient) -> LangsRequest<'a> {
         LangsRequest {
             client,
             ui: None
@@ -51,7 +51,7 @@ impl<'a> ApiRequest for LangsRequest<'a> {
 #[derive(Serialize)]
 pub struct DetectRequest<'a> {
     #[serde(skip)]
-    client: &'a TranslateAPI,
+    client: &'a ApiClient,
     text: &'a str,
     hint: Option<String>,
 }
@@ -68,7 +68,7 @@ impl<'a> DetectRequest<'a> {
         self.client.execute(self)
     }
 
-    pub(crate) fn new(client: &'a TranslateAPI, text: &'a str) -> DetectRequest<'a> {
+    pub(crate) fn new(client: &'a ApiClient, text: &'a str) -> DetectRequest<'a> {
         DetectRequest {
             client,
             text,
@@ -89,7 +89,7 @@ impl<'a> ApiRequest for DetectRequest<'a> {
 #[derive(Serialize)]
 pub struct TranslateRequest<'a> {
     #[serde(skip)]
-    client: &'a TranslateAPI,
+    client: &'a ApiClient,
     text: &'a str,
     lang: &'a str,
     format: Option<&'a str>,
@@ -112,7 +112,7 @@ impl<'a> TranslateRequest<'a> {
     }
 
     pub(crate) fn new(
-        client: &'a TranslateAPI,
+        client: &'a ApiClient,
         text: &'a str,
         lang: &'a str
     ) -> TranslateRequest<'a> {
@@ -142,7 +142,7 @@ mod tests {
 
     #[test]
     fn langs_request_without_optional_arguments() {
-        let api = TranslateAPI::new("token".to_string());
+        let api = ApiClient::new("token".to_string());
         let req = LangsRequest::new(&api);
         assert_eq!("".to_string(), to_string(&req).unwrap());
         assert_eq!("getLangs", req.method());
@@ -150,7 +150,7 @@ mod tests {
 
     #[test]
     fn detect_request_with_comma_separated_hint_list() {
-        let api = TranslateAPI::new("token".to_string());
+        let api = ApiClient::new("token".to_string());
         let req = DetectRequest::new(&api, "hello")
             .hint(&vec!["en", "es", "de"]);
         assert_eq!(
@@ -162,7 +162,7 @@ mod tests {
 
     #[test]
     fn translate_request_with_optional_arguments() {
-        let api = TranslateAPI::new("token".to_string());
+        let api = ApiClient::new("token".to_string());
         let req = TranslateRequest::new(&api, "hello", "ru")
             .format("plain")
             .options(1);

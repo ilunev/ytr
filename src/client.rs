@@ -10,15 +10,15 @@ const BASE_URL: &str = "https://translate.yandex.net/api/v1.5/tr.json";
 
 
 
-pub struct TranslateAPI {
+pub struct ApiClient {
     key: String,
     client: Client,
 }
 
-impl TranslateAPI {
-    pub fn new(key: String) -> TranslateAPI {
+impl ApiClient {
+    pub fn new(key: String) -> ApiClient {
         let client = Client::new();
-        TranslateAPI {
+        ApiClient {
             key,
             client,
         }
@@ -97,7 +97,7 @@ mod tests {
 
     #[test]
     fn make_url_test() {
-        let api = TranslateAPI::new("mytoken".to_string());
+        let api = ApiClient::new("mytoken".to_string());
         let url = api.make_url("method");
         assert_eq!(
             "https://translate.yandex.net/api/v1.5/tr.json/method?key=mytoken",

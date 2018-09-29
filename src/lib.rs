@@ -8,7 +8,7 @@ extern crate reqwest;
 extern crate url;
 
 
-pub use self::client::TranslateAPI;
+pub use self::client::ApiClient;
 pub use self::request::{ApiRequest, LangsRequest, DetectRequest, TranslateRequest};
 pub use self::response::{ApiResponse, LangsResponse, DetectResponse, TranslateResponse};
 pub use self::error::{Error, ApiError, Result};
