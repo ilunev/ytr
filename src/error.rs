@@ -1,19 +1,34 @@
+/// `Result` alias with [`ytr::Error`] as the `Err` variant.
+///
+/// [`ytr::Error`]: enum.Error.html
 pub type Result<T> = ::std::result::Result<T, Error>;
 
 
 
+/// Possible types of errors.
 #[derive(Debug)]
 pub enum Error {
+
+    /// Request succeeded, but API returned an error code.
     ApiError(ApiError),
+
+    /// Request succeeded, but the response could not be parsed.
     UnexpectedResponse,
+
+    /// Could not connect to server.
     RequestFailed,
 }
 
 
 
+/// API returned error.
 #[derive(Deserialize, Debug)]
 pub struct ApiError {
+
+    /// Error code.
     pub code: u16,
+
+    /// Error message.
     pub message: String,
 }
 

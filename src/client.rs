@@ -6,16 +6,22 @@ use response::ApiResponse;
 use request::{ApiRequest, LangsRequest, DetectRequest, TranslateRequest};
 use error::{Error, Result};
 
+
 const BASE_URL: &str = "https://translate.yandex.net/api/v1.5/tr.json";
 
 
 
+/// Client to call API methods.
 pub struct ApiClient {
     key: String,
     client: Client,
 }
 
 impl ApiClient {
+    /// Create new `ApiClient` with the specified API key.
+    ///
+    /// # Panic
+    /// Panics if native TLS backend cannot be created or initialized.
     pub fn new(key: String) -> ApiClient {
         let client = Client::new();
         ApiClient {
@@ -25,16 +31,19 @@ impl ApiClient {
     }
 
 
+    /// Create `LangsRequest` to call `getLangs` API method.
     pub fn get_langs(&self) -> LangsRequest {
         LangsRequest::new(&self)
     }
 
 
+    /// Create `DetectRequest` to call `detect` API method.
     pub fn detect<'a>(&'a self, text: &'a str) -> DetectRequest<'a> {
         DetectRequest::new(&self, text)
     }
 
 
+    /// Create `TranslateRequest` to call `translate` API method.
     pub fn translate<'a>(
         &'a self,
         text: &'a str,
@@ -45,6 +54,16 @@ impl ApiClient {
     }
 
 
+    /// Execute prepared request.
+    ///
+    /// **Note**: this crate's [`ApiRequest`] structs have `get()` method, so that you don't need to call
+    /// `execute` manually. But you can still use it to execute custom request structs that implement
+    /// [`ApiRequest`].
+    ///
+    /// # Panic
+    /// Panics if `req` cannot be serialized with `serde_urlencoded`.
+    ///
+    /// [`ApiRequest`]: trait.ApiRequest.html
     pub fn execute<Req, Resp>(&self, req: Req) -> Result<Resp>
         where Req: ApiRequest,
               Resp: ApiResponse,

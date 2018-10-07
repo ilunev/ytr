@@ -7,13 +7,19 @@ use error::Result;
 
 
 
+/// Request to be executed.
 pub trait ApiRequest: Serialize {
+    /// Method name for url.
     fn method(&self) -> &str;
 }
 
 
 
-
+/// Parameters for `getLangs` API method.
+///
+/// Instances are created via [`ApiClient::get_langs`].
+///
+/// [`ApiClient::get_langs`]: struct.ApiClient.html#method.get_langs
 #[derive(Serialize)]
 pub struct LangsRequest<'a> {
     #[serde(skip)]
@@ -22,11 +28,13 @@ pub struct LangsRequest<'a> {
 }
 
 impl<'a> LangsRequest<'a> {
-    pub fn ui(mut self, value: &'a str) -> LangsRequest<'a> {
-        self.ui = Some(value);
+    /// Set `ui` parameter.
+    pub fn ui(mut self, ui: &'a str) -> LangsRequest<'a> {
+        self.ui = Some(ui);
         self
     }
 
+    /// Call API method with prepared parameters.
     pub fn get(self) -> Result<LangsResponse> {
         self.client.execute(self)
     }
@@ -47,7 +55,11 @@ impl<'a> ApiRequest for LangsRequest<'a> {
 
 
 
-
+/// Parameters for `detect` API method.
+///
+/// Instances are created via [`ApiClient::detect`].
+///
+/// [`ApiClient::detect`]: struct.ApiClient.html#method.detect
 #[derive(Serialize)]
 pub struct DetectRequest<'a> {
     #[serde(skip)]
@@ -57,13 +69,15 @@ pub struct DetectRequest<'a> {
 }
 
 impl<'a> DetectRequest<'a> {
-    pub fn hint<S>(mut self, value: &[S]) -> DetectRequest<'a>
+    /// Set `hint` parameter.
+    pub fn hint<S>(mut self, hint: &[S]) -> DetectRequest<'a>
         where S: Borrow<str>,
     {
-        self.hint = Some(value.join(","));
+        self.hint = Some(hint.join(","));
         self
     }
 
+    /// Call API method with prepared parameters.
     pub fn get(self) -> Result<DetectResponse> {
         self.client.execute(self)
     }
@@ -85,7 +99,11 @@ impl<'a> ApiRequest for DetectRequest<'a> {
 
 
 
-
+/// Parameters for `translate` API method.
+///
+/// Instances are created via [`ApiClient::translate`].
+///
+/// [`ApiClient::translate`]: struct.ApiClient.html#method.translate
 #[derive(Serialize)]
 pub struct TranslateRequest<'a> {
     #[serde(skip)]
@@ -97,16 +115,19 @@ pub struct TranslateRequest<'a> {
 }
 
 impl<'a> TranslateRequest<'a> {
-    pub fn format(mut self, value: &'a str) -> TranslateRequest<'a> {
-        self.format = Some(value);
+    /// Set `format` parameter.
+    pub fn format(mut self, format: &'a str) -> TranslateRequest<'a> {
+        self.format = Some(format);
         self
     }
 
-    pub fn options(mut self, value: u8) -> TranslateRequest<'a> {
-        self.options = Some(value);
+    /// Set `options` parameter.
+    pub fn options(mut self, options: u8) -> TranslateRequest<'a> {
+        self.options = Some(options);
         self
     }
 
+    /// Call API method with prepared parameters.
     pub fn get(self) -> Result<TranslateResponse> {
         self.client.execute(self)
     }
