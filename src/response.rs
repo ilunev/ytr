@@ -86,8 +86,9 @@ impl ApiResponse for TranslateResponse {}
 
 #[cfg(test)]
 mod tests {
+    extern crate serde_json;
+
     use super::*;
-    use serde_json;
     use std::collections::HashMap;
 
 

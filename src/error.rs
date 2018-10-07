@@ -37,8 +37,9 @@ pub struct ApiError {
 
 #[cfg(test)]
 mod tests {
+    extern crate serde_json;
+
     use super::*;
-    use serde_json;
 
     #[test]
     fn deserialize_error_response() {
