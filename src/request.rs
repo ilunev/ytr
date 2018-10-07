@@ -1,5 +1,6 @@
 use serde::ser::Serialize;
 use std::borrow::Borrow;
+use std::fmt;
 
 use client::ApiClient;
 use response::{LangsResponse, DetectResponse, TranslateResponse};
@@ -27,6 +28,7 @@ pub struct LangsRequest<'a> {
     ui: Option<&'a str>,
 }
 
+
 impl<'a> LangsRequest<'a> {
     /// Set `ui` parameter.
     pub fn ui(mut self, ui: &'a str) -> LangsRequest<'a> {
@@ -47,11 +49,22 @@ impl<'a> LangsRequest<'a> {
     }
 }
 
+
 impl<'a> ApiRequest for LangsRequest<'a> {
     fn method(&self) -> &str {
         "getLangs"
     }
 }
+
+
+impl<'a> fmt::Debug for LangsRequest<'a> {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        f.debug_struct("LangsRequest")
+            .field("ui", &self.ui)
+            .finish()
+    }
+}
+
 
 
 
@@ -67,6 +80,7 @@ pub struct DetectRequest<'a> {
     text: &'a str,
     hint: Option<String>,
 }
+
 
 impl<'a> DetectRequest<'a> {
     /// Set `hint` parameter.
@@ -91,11 +105,23 @@ impl<'a> DetectRequest<'a> {
     }
 }
 
+
 impl<'a> ApiRequest for DetectRequest<'a> {
     fn method(&self) -> &str {
         "detect"
     }
 }
+
+
+impl<'a> fmt::Debug for DetectRequest<'a> {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        f.debug_struct("DetectRequest")
+            .field("text", &self.text)
+            .field("hint", &self.hint)
+            .finish()
+    }
+}
+
 
 
 
@@ -113,6 +139,7 @@ pub struct TranslateRequest<'a> {
     format: Option<&'a str>,
     options: Option<u8>,
 }
+
 
 impl<'a> TranslateRequest<'a> {
     /// Set `format` parameter.
@@ -148,11 +175,25 @@ impl<'a> TranslateRequest<'a> {
     }
 }
 
+
 impl<'a> ApiRequest for TranslateRequest<'a> {
     fn method(&self) -> &str {
         "translate"
     }
 }
+
+
+impl<'a> fmt::Debug for TranslateRequest<'a> {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        f.debug_struct("TranslateRequest")
+            .field("text", &self.text)
+            .field("lang", &self.lang)
+            .field("format", &self.format)
+            .field("options", &self.options)
+            .finish()
+    }
+}
+
 
 
 

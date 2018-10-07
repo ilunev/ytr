@@ -47,7 +47,7 @@
 //! [official documentation]: https://tech.yandex.ru/translate/doc/dg/concepts/About-docpage/
 
 
-#![deny(missing_docs)]
+#![deny(missing_docs, missing_debug_implementations, warnings)]
 
 
 

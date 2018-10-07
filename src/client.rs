@@ -1,3 +1,5 @@
+use std::fmt;
+
 use url::Url;
 use reqwest::{Client, StatusCode, header::ContentType};
 use serde_urlencoded;
@@ -108,6 +110,16 @@ impl ApiClient {
         url
     }
 }
+
+
+impl fmt::Debug for ApiClient {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        f.debug_struct("ApiClient")
+            .finish()
+    }
+}
+
+
 
 
 #[cfg(test)]

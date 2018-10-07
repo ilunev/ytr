@@ -9,7 +9,7 @@ pub trait ApiResponse: DeserializeOwned {}
 
 
 /// Response from `getLangs` API method.
-#[derive(Deserialize)]
+#[derive(Deserialize, Debug)]
 pub struct LangsResponse {
 
     /// Available translation directions.
@@ -25,7 +25,7 @@ impl ApiResponse for LangsResponse {}
 
 
 /// Response from `detect` API method.
-#[derive(Deserialize)]
+#[derive(Deserialize, Debug)]
 pub struct DetectResponse {
 
     /// Detected language code.
@@ -37,6 +37,7 @@ impl ApiResponse for DetectResponse {}
 
 
 /// Response from `translate` API method.
+#[derive(Debug)]
 pub struct TranslateResponse {
 
     /// Translated text.
