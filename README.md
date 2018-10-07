@@ -1,5 +1,8 @@
 # ytr
 Yandex.Translate API wrapper for Rust
+- [Documentation](https://docs.rs/ytr)
+- [crates.io](https://crates.io/crates/ytr)
+- [About Yandex.Translate API](https://tech.yandex.ru/translate/) (in Russian)
 
 ## Usage example
 ```rust
