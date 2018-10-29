@@ -1,7 +1,13 @@
 [package]
 name = "ytr"
 version = "0.1.0"
+description = "Yandex.Translate API wrapper for Rust"
+license = "MIT"
+repository = "https://github.com/ilunev/ytr"
+readme = "README.md"
 authors = ["Ilya Lunev <ilunev@protonmail.com>"]
+keywords = ["translation", "yandex", "translate"]
+categories = ["api-bindings"]
 
 [dependencies]
 url = "1.7.1"
