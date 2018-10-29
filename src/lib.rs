@@ -34,8 +34,8 @@
 //!     },
 //!     
 //!     Err(error) => {
-//!         println!(
-//!             "An error has occured: {:?}",
+//!         eprintln!(
+//!             "An error has occurred: {:?}",
 //!             error
 //!         );
 //!     },
