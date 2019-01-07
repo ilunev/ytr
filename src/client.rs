@@ -4,9 +4,19 @@ use url::Url;
 use reqwest::{Client, StatusCode, header::ContentType};
 use serde_urlencoded;
 
-use response::ApiResponse;
-use request::{ApiRequest, LangsRequest, DetectRequest, TranslateRequest};
-use error::{Error, Result};
+use crate::{
+    response::ApiResponse,
+    request::{
+        ApiRequest,
+        LangsRequest,
+        DetectRequest,
+        TranslateRequest
+    },
+    error::{
+        Error,
+        Result
+    },
+};
 
 
 const BASE_URL: &str = "https://translate.yandex.net/api/v1.5/tr.json";

@@ -2,9 +2,11 @@ use serde::ser::Serialize;
 use std::borrow::Borrow;
 use std::fmt;
 
-use client::ApiClient;
-use response::{LangsResponse, DetectResponse, TranslateResponse};
-use error::Result;
+use crate::{
+    client::ApiClient,
+    response::{LangsResponse, DetectResponse, TranslateResponse},
+    error::Result,
+};
 
 
 
