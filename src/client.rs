@@ -1,7 +1,7 @@
 use std::fmt;
 
 use url::Url;
-use reqwest::{Client, StatusCode, header::ContentType};
+use reqwest::{Client, StatusCode, header::CONTENT_TYPE};
 use serde_urlencoded;
 
 use crate::{
@@ -86,11 +86,11 @@ impl ApiClient {
         let resp = self.client
             .post(url)
             .body(data)
-            .header(ContentType::form_url_encoded())
+            .header(CONTENT_TYPE, "application/x-www-form-urlencoded")
             .send();
 
         if let Ok(mut resp) = resp {
-            if let StatusCode::Ok = resp.status() {
+            if let StatusCode::OK = resp.status() {
                 if let Ok(obj) = resp.json() {
                     Ok(obj)
                 } else {
